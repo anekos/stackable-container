@@ -11,6 +11,7 @@ connector_height = 4;
 
 mode = "normal";
 vase_thickness = 0.8;
+r = 3;
 // }}}
 
 // Initialization {{{
@@ -21,8 +22,6 @@ assert(mode == "vase" || mode == "normal", str("Invalid mode: ", mode));
 
 module base(width, depth) // {{{
 {
-    r = 2;
-
     offset(r = r) offset(delta = -r)
     {
         square([ width, depth ], center = true);
