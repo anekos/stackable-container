@@ -6,18 +6,18 @@ depth = 120;
 height = 90;
 
 bottom_padding = 2;
-bottom_height = 12;
+bottom_height = 14;
 connector_height = 4;
 
 mode = "normal";
-vase_wall_thickness = 0.8;
+vase_thickness = 0.8;
 // }}}
 
 // Initialization {{{
 $fn = 70;
 
 function vase_mode() = mode == "vase" || mode == "vase-inside";
-function shrink() = mode == "vase-inside" ? thickness - vase_wall_thickness : 0;
+function shrink() = mode == "vase-inside" ? thickness - vase_thickness : 0;
 
 assert(mode == "vase" || mode == "normal" || mode == "vase-inside", str("Invalid mode: ", mode));
 // }}}
@@ -54,7 +54,7 @@ module box(shrink = 0) // {{{
         {
             linear_extrude(height = height - bottom_height)
             {
-                base(width - shrink * 2, depth - shrink * 2);
+                base(width, depth);
             }
         }
     }
