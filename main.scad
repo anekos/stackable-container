@@ -5,8 +5,8 @@ width = 120;
 depth = 120;
 height = 90;
 
-bottom_padding = 2;
 bottom_height = 14;
+bottom_margin = 0.4;
 connector_height = 4;
 
 mode = "normal";
@@ -16,10 +16,7 @@ vase_thickness = 0.8;
 // Initialization {{{
 $fn = 70;
 
-function vase_mode() = mode == "vase" || mode == "vase-inside";
-function shrink() = mode == "vase-inside" ? thickness - vase_thickness : 0;
-
-assert(mode == "vase" || mode == "normal" || mode == "vase-inside", str("Invalid mode: ", mode));
+assert(mode == "vase" || mode == "normal", str("Invalid mode: ", mode));
 // }}}
 
 module base(width, depth) // {{{
@@ -32,12 +29,12 @@ module base(width, depth) // {{{
     }
 } // }}}
 
-module box(shrink = 0) // {{{
+module box() // {{{
 {
 
     linear_extrude(height = bottom_height - connector_height)
     {
-        base(width - bottom_padding * 2 - shrink * 2, depth - bottom_padding * 2 - shrink * 2);
+        base(width - thickness * 2 - bottom_margin * 2, depth - thickness * 2 - bottom_margin * 2);
     }
 
     hull()
@@ -46,7 +43,7 @@ module box(shrink = 0) // {{{
         {
             linear_extrude(height = connector_height)
             {
-                base(width - bottom_padding * 2 - shrink * 2, depth - bottom_padding * 2 - shrink * 2);
+                base(width - thickness * 2 - bottom_margin * 2, depth - thickness * 2 - bottom_margin * 2);
             }
         }
 
@@ -62,9 +59,9 @@ module box(shrink = 0) // {{{
 
 module main() // {{{
 {
-    if (vase_mode())
+    if (mode == "vase")
     {
-        box(shrink = shrink());
+        box();
     }
     else
     {
