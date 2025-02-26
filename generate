@@ -1,0 +1,56 @@
+#!/bin/bash
+
+set -euC
+# set -o pipefail
+#
+
+project_name=$(basename "$(pwd)")
+
+args=()
+
+function input() {
+  local name="$1"
+  local default="$2"
+  local hint="${3:-}"
+  local value user_input
+  local p_name="p_${name}"
+
+  echo -n "${name} (${default})"
+  [ -n "$hint" ] && echo -n " [$hint]"
+  echo -n ": "
+
+  read -r user_input
+  if [ -z "$user_input" ]
+  then
+    value="$default"
+  else
+    value="$user_input"
+  fi
+
+  declare -g "${p_name}"="$value"
+
+  if ! [[ $value =~ ^[0-9.]+$ ]]
+  then
+    value="\"${value}\""
+  fi
+
+  args+=(-D "${name}=${value}")
+}
+
+input width 120
+input depth 120
+input height 80
+input thickness 2
+input mode normal 'normal|vase|vase-input'
+
+
+# shellcheck disable=2154
+filename="dist/${project_name}-${p_width}x${p_depth}x${p_height}-${p_thickness}-${p_mode}.stl"
+
+openscad \
+	--hardwarnings \
+	-o "$filename" \
+	"${args[@]}" \
+	main.scad
+
+echo "Generated: $filename"
