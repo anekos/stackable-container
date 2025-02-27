@@ -10,7 +10,6 @@ bottom_margin = 0.4;
 connector_height = 4;
 
 mode = "normal";
-vase_thickness = 0.8;
 r = 3;
 // }}}
 
@@ -20,20 +19,21 @@ $fn = 70;
 assert(mode == "vase" || mode == "normal", str("Invalid mode: ", mode));
 // }}}
 
-module base(width, depth) // {{{
+module base(width, depth, inner = false) // {{{
 {
-    offset(r = r) offset(delta = -r)
+    d = inner ? thickness : 0;
+    offset(r = r - d) offset(delta = -r)
     {
         square([ width, depth ], center = true);
     }
 } // }}}
 
-module box() // {{{
+module box(inner = false) // {{{
 {
 
     linear_extrude(height = bottom_height - connector_height)
     {
-        base(width - thickness * 2 - bottom_margin * 2, depth - thickness * 2 - bottom_margin * 2);
+        base(width - thickness * 2 - bottom_margin * 2, depth - thickness * 2 - bottom_margin * 2, inner);
     }
 
     hull()
@@ -42,7 +42,7 @@ module box() // {{{
         {
             linear_extrude(height = connector_height)
             {
-                base(width - thickness * 2 - bottom_margin * 2, depth - thickness * 2 - bottom_margin * 2);
+                base(width - thickness * 2 - bottom_margin * 2, depth - thickness * 2 - bottom_margin * 2, inner);
             }
         }
 
@@ -50,7 +50,7 @@ module box() // {{{
         {
             linear_extrude(height = height - bottom_height)
             {
-                base(width, depth);
+                base(width, depth, inner);
             }
         }
     }
@@ -70,10 +70,7 @@ module main() // {{{
             box();
             translate([ 0, 0, thickness + 0.01 ])
             {
-                resize([ width - thickness * 2, depth - thickness * 2, height - thickness ])
-                {
-                    box();
-                }
+                box(inner = true);
             }
         }
     }
