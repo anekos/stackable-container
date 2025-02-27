@@ -5,6 +5,7 @@ set -euC
 #
 
 project_name=$(basename "$(pwd)")
+version=$(git log --oneline | wc -l)
 
 args=()
 
@@ -45,7 +46,7 @@ input mode normal 'normal|vase|vase-input'
 
 
 # shellcheck disable=2154
-filename="dist/${project_name}-${p_width}x${p_depth}x${p_height}-${p_thickness}-${p_mode}.stl"
+filename="dist/${project_name}-v${version}-${p_width}x${p_depth}x${p_height}-${p_thickness}-${p_mode}.stl"
 
 openscad \
 	--hardwarnings \
